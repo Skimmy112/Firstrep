@@ -2,6 +2,7 @@ package com.example.skimmy;
 
 //Hello
 //Hi
+//Hi Ali, welcome!
 
 import java.util.Scanner;
 import java.io.*;
