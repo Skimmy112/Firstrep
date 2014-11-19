@@ -1,6 +1,7 @@
 package com.example.skimmy;
 
 //Hello
+//Hi
 
 import java.util.Scanner;
 import java.io.*;
