@@ -1,9 +1,23 @@
 package com.example.skimmy;
 
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.app.Activity;
+import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -12,6 +26,43 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        //OUTPUT TEXT
+        TextView t = (TextView) findViewById(R.id.output);
+        
+        //SCROLLBAR
+        t.setMovementMethod(new ScrollingMovementMethod());
+        
+        //PRINT
+        System.setOut(new TextViewPrintStream(this, t));
+        
+        EditText v1 = (EditText) findViewById(R.id.inputText);
+        v1.setMovementMethod(new ScrollingMovementMethod());
+//        String input = v1.getText().toString();
+        
+        final String input = "Yale University Mr. is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the \"Collegiate School\" by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed \"Yale College\" in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";
+        
+        EditText v2 = (EditText) findViewById(R.id.keyword);
+        final String keyword = v2.getText().toString();
+        
+        
+        Button skim = (Button) findViewById(R.id.skimButton);
+        
+//        SkimmyTest.mainMethod("Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the \"Collegiate School\" by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed \"Yale College\" in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887."
+//				, "Yale"); 
+//        String skimmy = SkimmyTest.mainMethod(input, "Yale");
+//        System.out.println(skimmy);
+        
+        skim.setOnClickListener(new View.OnClickListener() {
+        	@Override
+        	public void onClick(View v) {
+//                System.out.println(SkimmyTest.mainMethod(input, "Yale"));
+//            	System.out.println("hello world");
+        		System.out.println(keyword);
+            }
+        });
+        
+        System.out.print("");
     }
 
 

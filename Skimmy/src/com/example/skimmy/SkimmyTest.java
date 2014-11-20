@@ -3,6 +3,7 @@ package com.example.skimmy;
 //Hello
 //Hi
 //Hi Ali, welcome!
+// Hi again!
 
 import java.util.Scanner;
 import java.io.*;
@@ -36,10 +37,10 @@ public class SkimmyTest
 		int count = countSentences(input);
 		String[] sentences = new String [count];
 		
-		if (DEBUG)
-		{
-			parseSentenceToArray(input, count, 1);
-		}
+//		if (DEBUG)
+//		{
+//			parseSentenceToArray(input, count, 1);
+//		}
 		for (int i=0 ; i<count; i++)
 		{
 			sentences[i]= parseSentenceToArray(input, count, i);
@@ -57,6 +58,11 @@ public class SkimmyTest
 			}
 		}
 		return skimmy;
+	}
+	
+	public static void test ()
+	{
+		System.out.println("Hello World");
 	}
 
 	public static int countSentences (String input)

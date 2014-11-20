@@ -8,9 +8,42 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.skimmy.MainActivity" >
 
-    <TextView
+    <EditText
+        android:id="@+id/inputText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:inputType="textMultiLine"
+        android:imeOptions="actionNext"
+        android:hint="Enter text you would like to skim" />
+
+    <Button
+        android:id="@+id/skimButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/inputText"
+        android:layout_below="@+id/inputText"
+        android:layout_marginTop="94dp"
+        android:text="Skim" />
+
+    <EditText
+        android:id="@+id/keyword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/skimButton"
+        android:layout_alignBottom="@+id/skimButton"
+        android:layout_alignLeft="@+id/inputText"
+        android:imeOptions = "actionGo"
+        android:hint="Enter keyword" />
+
+    <TextView
+        android:id="@+id/output"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/keyword"
+        android:layout_below="@+id/skimButton"
+        android:text="Output" />
 
 </RelativeLayout>
