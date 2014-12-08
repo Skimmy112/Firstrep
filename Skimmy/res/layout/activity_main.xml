@@ -15,18 +15,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:inputType="textMultiLine"
+        android:hint="Enter text you would like to skim"
         android:imeOptions="actionNext"
-        android:hint="Enter text you would like to skim" />
-
-    <Button
-        android:id="@+id/skimButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/inputText"
-        android:layout_below="@+id/inputText"
-        android:layout_marginTop="94dp"
-        android:text="Skim" />
+        android:textSize = "15sp"
+        android:maxHeight="200sp"
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/keyword"
@@ -36,6 +29,7 @@
         android:layout_alignBottom="@+id/skimButton"
         android:layout_alignLeft="@+id/inputText"
         android:imeOptions = "actionGo"
+        android:textSize = "15sp"
         android:hint="Enter keyword" />
 
     <TextView
@@ -44,6 +38,26 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/keyword"
         android:layout_below="@+id/skimButton"
+        android:textSize = "15sp"
         android:text="Output" />
+
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/output"
+        android:layout_alignRight="@+id/inputText"
+        android:layout_alignBottom="@+id/skimButton"
+        android:textSize = "15sp"
+        android:text="Clear" />
+
+    <Button
+        android:id="@+id/skimButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/clearButton"
+        android:text="Skim"
+        android:textSize="15sp" />
 
 </RelativeLayout>
