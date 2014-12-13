@@ -38,8 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/keyword"
         android:layout_below="@+id/skimButton"
-        android:textSize = "15sp"
-        android:text="Output" />
+        android:textSize = "15sp" />
 
     <Button
         android:id="@+id/clearButton"
@@ -59,23 +58,24 @@
         android:layout_toLeftOf="@+id/clearButton"
         android:text="Skim"
         android:textSize="15sp" />
-    
-        <WebView
-        android:id="@+id/webView1"
+
+    <Button
+        android:id="@+id/debug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="22dp"
-        android:layout_marginTop="40dp" />
-        
-        <TextView
-        android:id="@+id/textView2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/skimButton"
+        android:layout_marginBottom="35dp"
+        android:text="debug" />
+
+    <Button
+        android:id="@+id/getTextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/webView1"
-        android:layout_below="@+id/webView1"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignBaseline="@+id/keyword"
+        android:layout_alignBottom="@+id/keyword"
+        android:layout_toLeftOf="@+id/skimButton"
+        android:text="Get"
+        android:textSize="15sp" />
 
 </RelativeLayout>

@@ -1,16 +1,8 @@
 package com.example.skimmy;
 
-//Hello
-//Hi
-//Hi Ali, welcome!
-// Hi again!
-
 import java.util.Scanner;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -35,31 +27,19 @@ public class SkimmyMain
 //		System.out.println("Enter keyword: ");
 //		String keyword = console.next();
 //		String result = null;
-		
-		
+				
 //		TEST FOR DIFFERENT INPUT
-		String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";		
+//		String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";		
 //		String input = "http://en.wikipedia.org/wiki/Yale_University";
-//		String input = "http://www.gutenberg.org/files/44108/44108-0.txt";
+		String input = "http://www.gutenberg.org/files/44108/44108-0.txt";
 //		String input = "http://santolucito.github.io/cs112/tiffany.txt";
+		input = getUrl(input);
 		
-		if (input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.")){
-			if (input.startsWith("http://en.wikipedia.org/")){
-				input = parseWiki(input);
-			}
-			else if (input.endsWith("txt")){
-				System.out.println("getting text");
-				input = getUrl(input);
-				System.out.println("got text");
-			}
-		}
-		String keyword = "Yale";
-//		input = "I have made inquiries of the waiter regarding Mr. X., but he gives me in all simplicity to understand that he is an Alsatian--nothing more. One fine morning I return from my work and see in the letter-rack quite close to my keys a post card. For a moment I feel tempted to solve the ;;riddle by looking at the post card, but my good angel paralysed my hand, just as the young man came out of his hiding-place behind the door. I look him in the face and am startled; he is exactly like my wife. We greet each other silently, and each goes his way.";
-		System.out.println(input);
+		String keyword = "wife";
 		String result = mainMethod(input, keyword);
-		System.out.println(result);		
+		System.out.println(result);	
 	}	
-	
+
 //	MAIN METHOD WHICH BUTTON CALLS
 	public static String mainMethod ( String input, String keyword ) 
 	{
@@ -76,26 +56,17 @@ public class SkimmyMain
 				skimmy = skimmy.concat((i+1)+"."+sentences[i] + "\n" + "\n");
 			}
 		}
+		if (skimmy == ""){
+			skimmy = "Keyword not found. \n" +
+					"Note that keyword is case-sensitive.";
+		}
 		return skimmy;
 	}
 	
-	public static String parseWiki(String url) throws IOException
+	public static String parseWiki(String input)
 	{
-////		Code from http://stackoverflow.com/questions/16525725/android-parse-text-from-website
-//		URLConnection yc = url.openConnection();
-//	    BufferedReader in = new BufferedReader(
-//	                            new InputStreamReader(
-//	                            yc.getInputStream()));
-//	    String inputLine;
-//	    StringBuilder builder = new StringBuilder();
-//	    while ((inputLine = in.readLine()) != null) 
-//	        builder.append(inputLine.trim());
-//	    in.close();
-//	    String htmlPage = builder.toString();
 	    
-	    String htmlPage = getUrl(url);
-	    
-	    String content = htmlPage.substring(htmlPage.indexOf("<div id=\"mw-content-text\""), htmlPage.length());
+	    String content = input.substring(input.indexOf("<div id=\"mw-content-text\""), input.length());
 	    content = content.substring(content.indexOf("<p>"),content.length());
 	    
 //	    Take out TOC
@@ -127,9 +98,6 @@ public class SkimmyMain
 
 	public static String[] parseSentenceToArray(String input)
 	{   
-//		TEST STATEMENT:
-//		Yale University Mr. is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the "Collegiate School" by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed "Yale College" in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.
-		
 		String[] sentences = new String [1]; //Initialised to size 1 and can be expanded later
 		
 		String[] sentenceEnds = {". ", "! ", "? ", ".\" ", "!\" ", "?\" ", ".' ", "!' ","?' "};
@@ -148,10 +116,11 @@ public class SkimmyMain
 		boolean continueSentence=false;
 		boolean checkAgain = true;
 		String[] special = {"Ph.D.", "Mr.", "Mrs.", "Dr.", "Ms.", "Inc."};
-		for (int p=0; input.length()>5;p++) {
+		for (int p=0; input.length()>3;p++) {
 			while (checkAgain) {
 				for (int j = 0; j<special.length; j++){
-					if (preSentence.indexOf(special[j]) == (preSentence.length()-special[j].length())){
+					if (preSentence.endsWith(special[j])){
+//					if (preSentence.indexOf(special[j]) == (preSentence.length()-special[j].length())){
 						continueSentence = true;
 						if (DEBUG){
 							System.out.print("(a" + j + ")");
@@ -174,7 +143,7 @@ public class SkimmyMain
 							}
 						}
 						String preSentence2 = input.substring (0, input.indexOf(sentenceEnds[chosenEnd])+1);
-						preSentence = preSentence + preSentence2;
+						preSentence = preSentence + " " + preSentence2;
 						input = input.substring (input.indexOf(sentenceEnds[chosenEnd])+sentenceEnds[chosenEnd].length(), input.length());
 					} catch (Exception e){
 					}
@@ -247,9 +216,10 @@ public class SkimmyMain
 //	getURL method from weather app in lecture
 	  public static String getUrl(String address) throws MalformedURLException, IOException
 	  {
+		  String output = new String();
 		  // Create a URL object from the address
 		  URL url = new URL(address);
-		  
+
 		  // Create a new HTTP connection object
 		  HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -257,8 +227,8 @@ public class SkimmyMain
 		  BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 	 
 		  // Read the response and stick it in the output string
-		  String output = new String();
 		  String line = new String();
+		  
 	      for(line=reader.readLine(); line != null; line = reader.readLine())
 	      {
 	    	  if (line.length()>1 && line.charAt(line.length()-1)!= ' '){
@@ -269,7 +239,7 @@ public class SkimmyMain
 
 	      // Close the HTTP connection
 		  urlConnection.disconnect();
-		  
+		  System.out.println(output);
 		  // Return a string version of the response
 	      return output;
 	  }

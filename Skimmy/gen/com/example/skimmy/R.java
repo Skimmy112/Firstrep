@@ -1098,6 +1098,7 @@ containing a value of this type.
         public static final int checkbox=0x7f06002d;
         public static final int clearButton=0x7f060040;
         public static final int collapseActionView=0x7f06000d;
+        public static final int debug=0x7f060041;
         public static final int default_activity_button=0x7f060028;
         public static final int dialog=0x7f06000e;
         public static final int disableHome=0x7f060008;
@@ -1108,6 +1109,7 @@ containing a value of this type.
         public static final int esdk__webview=0x7f060043;
         public static final int expand_activities_button=0x7f060026;
         public static final int expanded_menu=0x7f06002c;
+        public static final int getTextButton=0x7f060042;
         public static final int home=0x7f060014;
         public static final int homeAsUp=0x7f060005;
         public static final int icon=0x7f06002a;
@@ -1143,12 +1145,10 @@ containing a value of this type.
         public static final int split_action_bar=0x7f06001e;
         public static final int submit_area=0x7f060039;
         public static final int tabMode=0x7f060002;
-        public static final int textView2=0x7f060042;
         public static final int title=0x7f06002b;
         public static final int top_action_bar=0x7f060020;
         public static final int up=0x7f060021;
         public static final int useLogo=0x7f060003;
-        public static final int webView1=0x7f060041;
         public static final int withText=0x7f06000c;
     }
     public static final class integer {
