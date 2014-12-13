@@ -59,5 +59,23 @@
         android:layout_toLeftOf="@+id/clearButton"
         android:text="Skim"
         android:textSize="15sp" />
+    
+        <WebView
+        android:id="@+id/webView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="22dp"
+        android:layout_marginTop="40dp" />
+        
+        <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/webView1"
+        android:layout_below="@+id/webView1"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

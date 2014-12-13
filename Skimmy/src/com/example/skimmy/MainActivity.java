@@ -11,6 +11,11 @@ import java.util.concurrent.ExecutionException;
 
 import org.json.JSONObject;
 
+import com.example.skimmy.CPSC112;
+import com.example.skimmy.R;
+
+import com.example.skimmy.SkimmyMain;
+import com.example.skimmy.R;
 import android.support.v7.app.ActionBarActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.os.AsyncTask;
@@ -19,11 +24,13 @@ import android.os.StrictMode;
 import android.os.StrictMode.ThreadPolicy;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.TextView;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,26 +80,38 @@ public class MainActivity extends ActionBarActivity {
 		final EditText v1 = (EditText) findViewById(R.id.inputText);
         final EditText v2 = (EditText) findViewById(R.id.keyword);
         
+//        TO TEST WEB
+		//make WebView be the place where our program will output the image
+		WebView webview = (WebView) findViewById(R.id.webView1);
+		webview.loadUrl(CPSC112.getWeatherGif());
+		TextView textview = (TextView) findViewById(R.id.textView2);
+		textview.setText(CPSC112.getWeatherTemp());
+        
+        Log.d("0", "abc");
+        
         skim.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View v) {      	
 //              v1.setMovementMethod(new ScrollingMovementMethod());
 //              String input = v1.getText().toString();
                 
-                String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";
-//        		String input = "http://en.wikipedia.org/wiki/Yale_University";        		
+//                String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";
+        		String input = "http://en.wikipedia.org/wiki/Yale_University";        		
         		
-//              String keyword = v2.getText().toString();
+              String keyword = v2.getText().toString();
 //      		 keyword = "Yale";
 
 //                String input = "http://en.wikipedia.org/wiki/Yale_University";
-          		String keyword = "Yale";
+//          		String keyword = "Yale";
         		          
+              Log.d("1", keyword);
+              
               if (keyword.equals("")){
             	  result = "Please input keyword before pressing Skim";
               } else {
 //            	  THIS PART STILL DOESN'T WORK ON ANDROID
             	  if (input.startsWith("http://en.wikipedia.org")) {
+            		  Log.d("2", keyword);
             		  try {
 						input = SkimmyMain.parseWiki(input);
             		  } catch (Exception e) {
@@ -135,6 +154,8 @@ public class MainActivity extends ActionBarActivity {
         
         System.out.print("");
     }
+    
+    
     
 //    From http://stackoverflow.com/questions/14250989/how-to-use-asynctask-correctly-android
     public class AsyncCaller extends AsyncTask<String, Void, String>

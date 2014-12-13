@@ -28,6 +28,7 @@ public class SkimmyMain
 	
 	public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, ExecutionException
 	{
+//		JAVA CONSOLE TESTING
 //		System.out.println("Enter text you would like to skim: ");
 //		Scanner console = new Scanner(System.in);
 //		String input = " " + console.nextLine() + "  ";
@@ -35,52 +36,31 @@ public class SkimmyMain
 //		String keyword = console.next();
 //		String result = null;
 		
-//		HARDCODING
-//		result = mainMethod("Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the \"Collegiate School\" by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed \"Yale College\" in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887."
-//				, "Yale"); 
-//		System.out.println(result);
 		
-//		String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";
-//		String keyword = "Yale";
-//		input = " " + input + " ";
-//        
-//		String result = mainMethod(input, keyword);
-//		System.out.println(result);
-//		System.out.println("Hello World");
+//		TEST FOR DIFFERENT INPUT
+		String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";		
+//		String input = "http://en.wikipedia.org/wiki/Yale_University";
+//		String input = "http://www.gutenberg.org/files/44108/44108-0.txt";
+//		String input = "http://santolucito.github.io/cs112/tiffany.txt";
 		
-		
-		
-//		try {
-//			URL url = new URL("http://en.wikipedia.org/wiki/Yale_University");
-//			String input = SkimmyMain.parseWiki(url);
-//        	System.out.println(input);
-//		} catch (Exception e) {
-//			System.out.println(e.toString());}
-//		
-		
-		String input = "http://en.wikipedia.org/wiki/Yale_University";
-//		String keyword = "Yale";
-//		String result = mainMethod(input, keyword);
-//		System.out.println(result);
-		
-		System.out.println(parseWiki(input));
-	}
-	
-	
-//	Evernote Developer Token: S=s1:U=8ffba:E=1516aae2a77:C=14a12fcfb68:P=1cd:A=en-devtoken:V=2:H=5489c655760e901fc205c397403d6feb
-	
-	public static String testMethod(String input, String keyword)
-	{
-		String skimmy = "";		
-		String[] sentences =  parseSentenceToArray (input);
-		for (int i=0; i<sentences.length;i++)
-		{
-			System.out.println(i+". "+sentences[i]);
+		if (input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.")){
+			if (input.startsWith("http://en.wikipedia.org/")){
+				input = parseWiki(input);
+			}
+			else if (input.endsWith("txt")){
+				System.out.println("getting text");
+				input = getUrl(input);
+				System.out.println("got text");
+			}
 		}
-		return skimmy;
-	}
+		String keyword = "Yale";
+//		input = "I have made inquiries of the waiter regarding Mr. X., but he gives me in all simplicity to understand that he is an Alsatian--nothing more. One fine morning I return from my work and see in the letter-rack quite close to my keys a post card. For a moment I feel tempted to solve the ;;riddle by looking at the post card, but my good angel paralysed my hand, just as the young man came out of his hiding-place behind the door. I look him in the face and am startled; he is exactly like my wife. We greet each other silently, and each goes his way.";
+		System.out.println(input);
+		String result = mainMethod(input, keyword);
+		System.out.println(result);		
+	}	
 	
-	
+//	MAIN METHOD WHICH BUTTON CALLS
 	public static String mainMethod ( String input, String keyword ) 
 	{
 		String skimmy = "";
@@ -130,7 +110,7 @@ public class SkimmyMain
 //	    remove lists
 	    content.replaceAll("<ul.*?</ul>", "");
 	    
-//	    &Amp = &
+//	    &Amp = & (some symbols appear differently)
 	    content = content.replaceAll("&amp;", "&");
 	    
 //	    Chop end at references
@@ -141,22 +121,8 @@ public class SkimmyMain
 	    
 //	    remove "Notes and references"
 	    parsed = parsed.substring(0,parsed.length()-20);
-	   
-	    	    
+	       	    
 		return parsed;
-	}
-	
-	public static int countSentences (String input)
-	{
-	int count = 0;
-	for( int i=0; i<input.length(); i++ )
-	{
-	    if( input.charAt(i) == '.' )
-	    {
-	        count++;
-	    } 
-	}
-	return count;
 	}
 
 	public static String[] parseSentenceToArray(String input)
@@ -164,95 +130,93 @@ public class SkimmyMain
 //		TEST STATEMENT:
 //		Yale University Mr. is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the "Collegiate School" by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed "Yale College" in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.
 		
-		String[] sentences = new String [1];
-		String preSentence = input.substring (0, input.indexOf(". ")+1);
-		input = input.substring (input.indexOf(". ")+1, input.length());
+		String[] sentences = new String [1]; //Initialised to size 1 and can be expanded later
+		
+		String[] sentenceEnds = {". ", "! ", "? ", ".\" ", "!\" ", "?\" ", ".' ", "!' ","?' "};
+		int lowestEnd=input.length();
+		int chosenEnd = 0;
+		for (int i = 0; i<sentenceEnds.length; i++){
+			if (input.indexOf(sentenceEnds[i])<lowestEnd && input.indexOf(sentenceEnds[i])!=-1){
+				lowestEnd=input.indexOf(sentenceEnds[i]);
+				chosenEnd=i;
+			}
+		}
+		String preSentence = input.substring (0, input.indexOf(sentenceEnds[chosenEnd])+1);
+		input = input.substring (input.indexOf(sentenceEnds[chosenEnd])+sentenceEnds[chosenEnd].length(), input.length());
+				
+		//Next part to accommodate words containing periods
 		boolean continueSentence=false;
 		boolean checkAgain = true;
-
-//		IS THERE A WAY TO LINK THIS TO EASILY EDITABLE TEXT FILE?
-//		Find database of these 
 		String[] special = {"Ph.D.", "Mr.", "Mrs.", "Dr.", "Ms.", "Inc."};
-			
-		
-		for (int p=0; input.indexOf('.')!=-1;p++)
-		{
-			while (checkAgain)
-			{
-				for (int j = 0; j<special.length; j++)
-				{
-					if (preSentence.indexOf(special[j]) == (preSentence.length()-special[j].length()))
-					{
+		for (int p=0; input.length()>5;p++) {
+			while (checkAgain) {
+				for (int j = 0; j<special.length; j++){
+					if (preSentence.indexOf(special[j]) == (preSentence.length()-special[j].length())){
 						continueSentence = true;
-						if (DEBUG)
-						{
+						if (DEBUG){
 							System.out.print("(a" + j + ")");
 						}
 					}
-					else
-					{
-						if (DEBUG)
-						{
+					else{
+						if (DEBUG){
 							System.out.print("(b" + j + ")");
 						}
 					}
 				}
-//				THERE IS A BUG SOMEWHERE HERE WHICH STOPS ANDROID SIDE FROM WORKING CONTINUE HERE!
-				if (continueSentence)
-				{
-					preSentence = preSentence.concat(input.substring(0,input.indexOf(". ")+1));
-					try{
-						input = input.substring (input.indexOf(". ")+1, input.length());
-					}
-					catch (Exception e){
+				if (continueSentence){
+					try {
+						lowestEnd=input.length();
+						chosenEnd = 0;
+						for (int i = 0; i<sentenceEnds.length; i++){
+							if (input.indexOf(sentenceEnds[i])<lowestEnd && input.indexOf(sentenceEnds[i])!=-1){
+								lowestEnd=input.indexOf(sentenceEnds[i]);
+								chosenEnd=i;
+							}
+						}
+						String preSentence2 = input.substring (0, input.indexOf(sentenceEnds[chosenEnd])+1);
+						preSentence = preSentence + preSentence2;
+						input = input.substring (input.indexOf(sentenceEnds[chosenEnd])+sentenceEnds[chosenEnd].length(), input.length());
+					} catch (Exception e){
 					}
 					checkAgain = true;
 					continueSentence = false;
-					if (DEBUG)
-					{
+					if (DEBUG){
 						System.out.print("(c)");
 					}
 				}
-				else
-				{
+				else{
 					checkAgain = false;
-					
-					if (DEBUG)
-					{
+					if (DEBUG){
 						System.out.print("(d)");
 					}
 				}
 			}
-			if (sentences[sentences.length-1]!=null)
-			{
+			if (sentences[sentences.length-1]!=null){ //Expands array of sentences as needed
 				sentences=expandArray(sentences);
+			}
+			if (preSentence.charAt(0)!= ' '){ //Makes result look uniform
+				preSentence = " " + preSentence; 
 			}
 			sentences[p]=preSentence;
 			try {
-				preSentence = input.substring (0, input.indexOf(". ")+1);
-				input = input.substring (input.indexOf(". ")+1, input.length());
-			}
-			catch (Exception e){
-				
+				lowestEnd=input.length();
+				chosenEnd = 0;
+				for (int i = 0; i<sentenceEnds.length; i++){
+					if (input.indexOf(sentenceEnds[i])<lowestEnd && input.indexOf(sentenceEnds[i])!=-1){
+						lowestEnd=input.indexOf(sentenceEnds[i]);
+						chosenEnd=i;
+					}
+				}
+				preSentence = input.substring (0, input.indexOf(sentenceEnds[chosenEnd])+1);
+				input = input.substring (input.indexOf(sentenceEnds[chosenEnd])+sentenceEnds[chosenEnd].length(), input.length());
+			} catch (Exception e){
 			}
 			checkAgain = true;
-			
-//			DEBUG STATEMENT
-			if (DEBUG)
-			{
+			if (DEBUG){
 				System.out.println("P: " + p);
 				System.out.println(sentences[p]);	
 			}
 		}
-		
-		if (DEBUG)
-		{
-			for (int i=0; i<sentences.length; i++)
-			{
-				System.out.println(sentences[i]);
-			}
-		}
-		
 		return sentences;
 	}
 	
@@ -264,21 +228,6 @@ public class SkimmyMain
 			newArray[i]=originalArray[i];
 		}
 		return newArray;
-	}
-	
-	
-//	LITTLE ATTEMPT.
-	public static String specialList(int i) throws FileNotFoundException
-	{
-		Scanner specialList = new Scanner(new File("specialList.txt"));
-		String specials = specialList.toString();
-		String[] special = new String [10];
-		while (specials.length()>0)
-		{
-			special[i]=specialList.next();
-			specials = specials.substring(special[i].length(), specials.length());
-		}
-		return special[i];
 	}
 	
 	 //checks if keyword is present in each string
@@ -309,8 +258,12 @@ public class SkimmyMain
 	 
 		  // Read the response and stick it in the output string
 		  String output = new String();
-	      for(String line = new String(); line != null; line = reader.readLine())
+		  String line = new String();
+	      for(line=reader.readLine(); line != null; line = reader.readLine())
 	      {
+	    	  if (line.length()>1 && line.charAt(line.length()-1)!= ' '){
+	    		  line = line + " ";
+	    	  }
 	    	  	output = output + line;
 	      }
 
