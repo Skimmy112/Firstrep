@@ -13,9 +13,24 @@ import org.json.JSONObject;
 public class CPSC112 {
 	  public static void main(String[] args) throws MalformedURLException, IOException
 	  {
-		  System.out.println("woot");
-		  getWeatherGif();
+		  getWiki();
 	  }	
+	  
+	  public static String getWiki(){
+		  String url = new String();
+		  String response = new String();
+		  try{
+			  response = getUrl("http://en.wikipedia.org/w/api.php?action=parse&prop=text&page=Yale_University");	
+//		      JSONObject json = new JSONObject(response);
+//			  response = json.getJSONObject("current_observation").getString("icon_url");
+		  }catch (Exception e){
+		        System.out.println(e.toString());
+		  }
+		  System.out.println(response);
+		  System.out.println("done!");
+		  System.out.println("URL = " + url);
+		  return response;
+	  }
 	  
 	  public static String getWeatherGif()
 	  {

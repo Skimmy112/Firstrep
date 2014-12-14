@@ -28,7 +28,9 @@ import android.webkit.WebView;
 import android.widget.TextView;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -41,6 +43,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnClickListener;
 
 
 
@@ -49,13 +53,10 @@ public class MainActivity extends ActionBarActivity {
 	public static boolean DEBUG = true;
 	public volatile TextView t;
 	public volatile String result;
-	private EditText urlText;
-	private String input;
-	private String URL;
-	private boolean toSkim = true;
 	private String internetInput=null;
-	private boolean fromInternet = false;
-	
+	private String input;
+	private String URL="";
+	private boolean toSkim = true;	
 	  
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,65 +82,42 @@ public class MainActivity extends ActionBarActivity {
         
         Button skim = (Button) findViewById(R.id.skimButton);
         Button clear = (Button) findViewById(R.id.clearButton);
-        Button debug = (Button) findViewById(R.id.debug);  
-        Button get = (Button) findViewById(R.id.getTextButton);  
+//        Button wiki = (Button) findViewById(R.id.wikiButton); 
         
 		final EditText v1 = (EditText) findViewById(R.id.inputText);
         final EditText v2 = (EditText) findViewById(R.id.keyword);
         v1.setMovementMethod(new ScrollingMovementMethod());
+        registerForContextMenu(t);
+        t.setText("Tap and hold the output to copy to clipboard.\n" +
+        		"The box will turn gray.");
         
+//        input = "https://dl.dropboxusercontent.com/u/5819381/WikiTest.txt";
 //        input = "http://en.wikipedia.org/wiki/Yale_University";
 //		input = "http://santolucito.github.io/cs112/tiffany.txt";
-        
-        Log.d("0", "abc");
-        
-//        t.setText(SkimmyMain.getWeatherTemp());
-        
-        get.setOnClickListener(new View.OnClickListener() {
-        	@Override
-        	public void onClick(View v) {
-                String input = v1.getText().toString();
-          		if (input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.") && input.indexOf(' ')==-1){
-          			URL = "From: "+ input + "\n\n" ;
-          			fromInternet=true;
-        			if (input.startsWith("http://en.wikipedia.org")){
-        				getUrl2(input);	
-        				input = SkimmyMain.parseWiki(input);
-        			} else if (input.endsWith(".txt")) {
-        				getUrl2(input);	
-        			} else {
-        				System.out.println("Sorry, this app currently only accepts wikipedia and .txt links.");
-        				toSkim=false;
-        			}
-        		}
-            }
-        });
         
         skim.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View v) {   
-        	    
-//                String input = "http://en.wikipedia.org/wiki/Yale_University";
-//          		String keyword = "Yale";
-          		
+        		
               String input = v1.getText().toString();
               String keyword = v2.getText().toString();
               toSkim=true;
-              fromInternet=false;
               t.setText("");
+              t.scrollTo(0, 0); //Scroll output box back to top 
+              t.setBackgroundColor(Color.TRANSPARENT);
                 
-//              String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";
-        		
- 
               if (keyword.equals("")){
             	  result = "Please input keyword before pressing Skim";
               } else {
-          		if (input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.") && input.indexOf(' ')==-1){
+          		if ((input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.")) && input.indexOf(" ")==-1){
           			URL = "From: "+ input + "\n\n" ;
-          			fromInternet=true;
-        			if (input.startsWith("http://en.wikipedia.org")){
-        				input = getUrl(input);	
+        			if (input.startsWith("http://en.wikipedia.org/wiki/")||input.startsWith("http://en.m.wikipedia.org/wiki/")){
+        				input=getUrl(input);
+        				try {
         				input = SkimmyMain.parseWiki(input);
+        				} catch (Exception e){
+        					result = e.toString();
+        				}
         			} else if (input.endsWith(".txt")) {
         				input = getUrl(input);	
         			} else {
@@ -147,12 +125,19 @@ public class MainActivity extends ActionBarActivity {
         				toSkim=false;
         			}
         		}
-          		result = input;
-          		if (toSkim){
+          		if (input == "No network connection available."){
+          			input = "";
+          			URL="";
+          			result = "No network connection available.";
+          		}else if (input == "Unable to retrieve web page. URL may be invalid."){
+          			input = "";
+          			URL="";
+          			result = "Unable to retrieve web page. URL may be invalid.";
+          		}else if (toSkim){
           			try {
                 		result = SkimmyMain.mainMethod(input,keyword);
                 	} catch (Exception e) {
-      			      	System.out.println(e.toString());
+      			      	result=e.toString();
                 	}
           		}
               }
@@ -172,34 +157,48 @@ public class MainActivity extends ActionBarActivity {
         		v1.setText("");
         		v2.setText("");
         		result = "";
+                t.setBackgroundColor(Color.TRANSPARENT);
             }
         });
         
-        debug.setOnClickListener(new View.OnClickListener() {
-        	@Override
-        	public void onClick(View v) {
-                String input = v1.getText().toString();
-        		ConnectivityManager connMgr = (ConnectivityManager) 
-                        getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            	new DownloadWebpageTask().execute(input);
-//                if (networkInfo != null && networkInfo.isConnected()) {
-//                    try {
-//						input = new DownloadWebpageTask().execute(input).get();
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (ExecutionException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//                } else {
-//                    System.out.println("No network connection available.");
-//                }
-                System.out.println(input);
-        		
+        //Copies text to clipboard and changes background to light gray
+        t.setOnClickListener(new OnClickListener() {
+			@SuppressWarnings("deprecation")
+			@Override
+            public void onClick(View v) {
+            	ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                String getstring = t.getText().toString();
+                clipboard.setText(getstring);
+                t.setBackgroundColor(Color.LTGRAY);
             }
         });
+        
+        //Remnants of "Wiki" button which downloaded html from Wikipedia in a separate method before skimming
+//        wiki.setOnClickListener(new View.OnClickListener() {
+//        	@Override
+//        	public void onClick(View v) {
+//                String input = v1.getText().toString();
+//        		if (input.length()>0&&(input.startsWith("http://en.wikipedia.org")||input.startsWith("http://en.m.wikipedia.org"))){
+//        			try{ 
+//        				ConnectivityManager connMgr = (ConnectivityManager) 
+//                                getSystemService(Context.CONNECTIVITY_SERVICE);
+//                        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+//                        if (networkInfo != null && networkInfo.isConnected()) {
+//                        	new DownloadWebpageTask().execute(input);
+//                        } else {
+//                        	t.setText("No network connection available.");
+//                        }
+//                        wikied = true;
+//                        t.setText("Ready to skim");
+//        			} catch (Exception e) {
+//        				t.setText("You only need to press this button for Wikipedia links");
+//        			}
+//        		} else {
+//                	t.setText("You only need to press this button for Wikipedia links");
+//                }
+//        	}
+//        });
+        
     }
     
     public String getUrl(String input){
@@ -218,7 +217,7 @@ public class MainActivity extends ActionBarActivity {
 				e.printStackTrace();
 			}
         } else {
-            System.out.println("No network connection available.");
+            input = "No network connection available.";
         }
     	return input;
     }
@@ -255,7 +254,6 @@ public class MainActivity extends ActionBarActivity {
             try {
                 return downloadUrl(urls[0]);
             } catch (IOException e) {
-            	System.out.println("Unable to retrieve web page. URL may be invalid.");
                 return "Unable to retrieve web page. URL may be invalid.";
             }
         }
@@ -264,45 +262,14 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(String result) {
             pdLoading.dismiss();
             internetInput = result;
-            System.out.println(internetInput);
        }
     }
-    private class DownloadWebpageTask2 extends AsyncTask<String, Void, String> {
-    	ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            //this method will be running on UI thread
-            pdLoading.setMessage("\tLoading...");
-            pdLoading.show();
-        }
-    	
-        @Override
-        protected String doInBackground(String... urls) {
-              
-            // params comes from the execute() call: params[0] is the url.
-            try {
-                return downloadUrl(urls[0]);
-            } catch (IOException e) {
-            	System.out.println("Unable to retrieve web page. URL may be invalid.");
-                return "Unable to retrieve web page. URL may be invalid.";
-            }
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            pdLoading.dismiss();
-            internetInput = result;
-       }
-    }    
-    
     
     private String downloadUrl(String myurl) throws IOException {
         InputStream is = null;
         // Only display the first 500 characters of the retrieved
         // web page content.
-        int len = 500;
+        int len = 1000000;
             
         try {
             URL url = new URL(myurl);
@@ -313,11 +280,10 @@ public class MainActivity extends ActionBarActivity {
             conn.setDoInput(true);
             // Starts the query
             conn.connect();
-            int response = conn.getResponseCode();
             is = conn.getInputStream();
 
             // Convert the InputStream into a string
-            String contentAsString = readIt(is, len);
+            String contentAsString = readIt3(is, len);
             return contentAsString;
             
         // Makes sure that the InputStream is closed after the app is
@@ -329,6 +295,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
     
+    //Modified readIt method. Too slow.
     public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
 		  String line = new String();
 		  String output = new String();
@@ -338,11 +305,11 @@ public class MainActivity extends ActionBarActivity {
 				  line = line + " ";
 			  }
 			  output = output + line;
-		  }
-		  
+		  }  
         return output;
     }
     
+    //First iteration of readIt method. Limited by number of characters and cannot detect lines.
     public String readIt2(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
         Reader reader = null;
         reader = new InputStreamReader(stream, "UTF-8");        
@@ -351,7 +318,27 @@ public class MainActivity extends ActionBarActivity {
         return new String(buffer);
     }
     
-//    From http://stackoverflow.com/questions/14250989/how-to-use-asynctask-correctly-android
+    //Latest iteration of readIt method. Modified from: http://www.java2s.com/Code/Android/File/ToconverttheInputStreamtoStringweusetheBufferedReaderreadLinemethod.htm
+    public String readIt3(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        BufferedReader reader = null;
+        reader = new BufferedReader(new InputStreamReader(stream, "UTF-8")); 
+        StringBuilder sb=new StringBuilder();
+        String line = null;
+        try {
+        	while((line=reader.readLine())!=null){
+        		if (line.length()>1 && line.charAt(line.length()-1)!= ' '){
+  				  	line = line + " ";
+  			  	}
+        		sb.append(line);
+        	}
+        } catch (IOException e){
+        	e.printStackTrace();
+        }
+        return sb.toString();
+    }
+    
+//    First attempt using Async From http://stackoverflow.com/questions/14250989/how-to-use-asynctask-correctly-android
+//    Unsuccessful.
     public class AsyncCaller extends AsyncTask<String, Void, String>
     {
         ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
@@ -370,7 +357,6 @@ public class MainActivity extends ActionBarActivity {
         	
             //this method will be running on background thread so don't update UI frome here
             //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
-        	URL url;
 //        	String input = param[0];
         	String input = "http://en.wikipedia.org/wiki/Yale_University";
 			try {

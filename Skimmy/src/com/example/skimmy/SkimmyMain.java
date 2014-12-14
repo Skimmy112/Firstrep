@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import com.example.skimmy.MainActivity.AsyncCaller;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.text.InputFilter.LengthFilter;
 
@@ -23,28 +24,32 @@ public class SkimmyMain
 //		JAVA CONSOLE TESTING
 //		System.out.println("Enter text you would like to skim: ");
 //		Scanner console = new Scanner(System.in);
-//		String input = " " + console.nextLine() + "  ";
+//		String input = console.nextLine();
 //		System.out.println("Enter keyword: ");
 //		String keyword = console.next();
 //		String result = null;
 				
 //		TEST FOR DIFFERENT INPUT
 //		String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";		
+//		String input = "http://en.wikipedia.org/w/api.php?action=parse&section=0&rvprop=content&format=json&page=Yale_University";
 //		String input = "http://en.wikipedia.org/wiki/Yale_University";
-		String input = "http://www.gutenberg.org/files/44108/44108-0.txt";
+//		String input = "http://www.gutenberg.org/files/44108/44108-0.txt";
 //		String input = "http://santolucito.github.io/cs112/tiffany.txt";
-		input = getUrl(input);
-		
-		String keyword = "wife";
-		String result = mainMethod(input, keyword);
-		System.out.println(result);	
+//		input = getUrl(input);
+//		System.out.println(input);
+//		System.out.println(parseWiki(input));
+//		
+//		String keyword = "wife";
+//		String result = mainMethod(input, keyword);
+//		System.out.println(result);	
 	}	
 
 //	MAIN METHOD WHICH BUTTON CALLS
 	public static String mainMethod ( String input, String keyword ) 
 	{
 		String skimmy = "";
-		input = " " + input + " ";
+//		input = " " + input + ". SKIMMING_COMPLETED";
+		input = " " + input + " . ";
 		String[] sentences =  parseSentenceToArray (input);
 		int size=sentences.length;
 		boolean[] containKeyword = new boolean [size];
@@ -58,7 +63,8 @@ public class SkimmyMain
 		}
 		if (skimmy == ""){
 			skimmy = "Keyword not found. \n" +
-					"Note that keyword is case-sensitive.";
+					"Note that keyword is case-sensitive.\n\n" +
+					"If you entered a link, ensure that your input does not end with a space.";
 		}
 		return skimmy;
 	}
@@ -66,14 +72,16 @@ public class SkimmyMain
 	public static String parseWiki(String input)
 	{
 	    
-	    String content = input.substring(input.indexOf("<div id=\"mw-content-text\""), input.length());
+	    String content = input.substring(input.indexOf("<div id=\"content\""), input.length());
 	    content = content.substring(content.indexOf("<p>"),content.length());
+//	    return content;
+
 	    
 //	    Take out TOC
-	    String preTOC=content.substring(0,content.indexOf("<div id=\"toc\""));
-	    String postTOC=content.substring(content.substring(content.indexOf("<div id=\"toc\""),
-	    		content.length()).indexOf("<h2>"),content.length());
-	    content = preTOC + postTOC;
+//	    String preTOC=content.substring(0,content.indexOf("<div id=\"toc\""));
+//	    String postTOC=content.substring(content.substring(content.indexOf("<div id=\"toc\""),
+//	    		content.length()).indexOf("<h2>"),content.length());
+//	    content = preTOC + postTOC;
 	    
 //	    remove tables
 	    content.replaceAll("<table.*?</table>", "");
@@ -91,7 +99,7 @@ public class SkimmyMain
 	    parsed = parsed.replaceAll("\\[.*?]","");
 	    
 //	    remove "Notes and references"
-	    parsed = parsed.substring(0,parsed.length()-20);
+//	    parsed = parsed.substring(0,parsed.length()-25);
 	       	    
 		return parsed;
 	}
@@ -116,7 +124,10 @@ public class SkimmyMain
 		boolean continueSentence=false;
 		boolean checkAgain = true;
 		String[] special = {"Ph.D.", "Mr.", "Mrs.", "Dr.", "Ms.", "Inc."};
-		for (int p=0; input.length()>3;p++) {
+		boolean keepLooking = true;
+		for (int p=0; keepLooking ;p++) {
+			keepLooking = false;
+//		for (int p=0; input.indexOf("SKIMMING_COMPLETED")!=0;p++) {
 			while (checkAgain) {
 				for (int j = 0; j<special.length; j++){
 					if (preSentence.endsWith(special[j])){
@@ -184,6 +195,11 @@ public class SkimmyMain
 			if (DEBUG){
 				System.out.println("P: " + p);
 				System.out.println(sentences[p]);	
+			}
+			for (int i = 0; i<sentenceEnds.length; i++){
+				if (input.indexOf(sentenceEnds[i])!=-1){
+					keepLooking = true;
+				}
 			}
 		}
 		return sentences;

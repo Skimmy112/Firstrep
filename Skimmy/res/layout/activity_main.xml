@@ -15,7 +15,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:hint="Enter text you would like to skim"
+        android:hint="1. Enter text you would like to skim \n
+You can also enter a Wikipedia or .txt link"
         android:imeOptions="actionNext"
         android:textSize = "15sp"
         android:maxHeight="200sp"
@@ -25,12 +26,12 @@
         android:id="@+id/keyword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/skimButton"
         android:layout_alignBottom="@+id/skimButton"
         android:layout_alignLeft="@+id/inputText"
-        android:imeOptions = "actionGo"
-        android:textSize = "15sp"
-        android:hint="Enter keyword" />
+        android:layout_toLeftOf="@+id/skimButton"
+        android:hint="2. Enter keyword"
+        android:imeOptions="actionGo"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/output"
@@ -38,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/keyword"
         android:layout_below="@+id/skimButton"
+        android:textIsSelectable="true"
         android:textSize = "15sp" />
 
     <Button
@@ -56,26 +58,17 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/clearButton"
-        android:text="Skim"
+        android:text="Skim Me!"
         android:textSize="15sp" />
 
+<!-- EX-WIKI BUTTON
     <Button
-        android:id="@+id/debug"
+        android:id="@+id/wikiButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/skimButton"
-        android:layout_marginBottom="35dp"
-        android:text="debug" />
-
-    <Button
-        android:id="@+id/getTextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/keyword"
-        android:layout_alignBottom="@+id/keyword"
+        android:layout_above="@+id/output"
         android:layout_toLeftOf="@+id/skimButton"
-        android:text="Get"
-        android:textSize="15sp" />
+        android:text="Wiki"
+        android:textSize="15sp" /> -->
 
 </RelativeLayout>
