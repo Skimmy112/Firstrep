@@ -59,16 +59,11 @@ public class MainActivity extends ActionBarActivity {
 	private boolean toSkim = true;	
 	  
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-//    	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-//    	StrictMode.setThreadPolicy(policy); 
-    	
+    protected void onCreate(Bundle savedInstanceState) { 	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        
-        
-//        Setup Evernote
+       
+//        Preparation for adding Evernote capability
 //        mEvernoteSession = EvernoteSession.getInstance(this, CONSUMER_KEY, CONSUMER_SECRET, EVERNOTE_SERVICE);
         
         //OUTPUT TEXT
@@ -82,18 +77,13 @@ public class MainActivity extends ActionBarActivity {
         
         Button skim = (Button) findViewById(R.id.skimButton);
         Button clear = (Button) findViewById(R.id.clearButton);
-//        Button wiki = (Button) findViewById(R.id.wikiButton); 
         
 		final EditText v1 = (EditText) findViewById(R.id.inputText);
         final EditText v2 = (EditText) findViewById(R.id.keyword);
         v1.setMovementMethod(new ScrollingMovementMethod());
         registerForContextMenu(t);
         t.setText("Tap and hold the output to copy to clipboard.\n" +
-        		"The box will turn gray.");
-        
-//        input = "https://dl.dropboxusercontent.com/u/5819381/WikiTest.txt";
-//        input = "http://en.wikipedia.org/wiki/Yale_University";
-//		input = "http://santolucito.github.io/cs112/tiffany.txt";
+        		"The box will turn gray."); //Instructions for copying
         
         skim.setOnClickListener(new View.OnClickListener() {
         	@Override
@@ -102,29 +92,30 @@ public class MainActivity extends ActionBarActivity {
               String input = v1.getText().toString();
               String keyword = v2.getText().toString();
               toSkim=true;
-              t.setText("");
+              t.setText(""); //Empties output box
               t.scrollTo(0, 0); //Scroll output box back to top 
               t.setBackgroundColor(Color.TRANSPARENT);
                 
               if (keyword.equals("")){
             	  result = "Please input keyword before pressing Skim";
               } else {
-          		if ((input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.")) && input.indexOf(" ")==-1){
-          			URL = "From: "+ input + "\n\n" ;
-        			if (input.startsWith("http://en.wikipedia.org/wiki/")||input.startsWith("http://en.m.wikipedia.org/wiki/")){
+          		if ((input.startsWith("http://")||input.startsWith("https://")||input.startsWith("www.")) && input.indexOf(" ")==-1){ //Distinguishes between URL and user input text
+          			URL = "From: "+ input + "\n\n" ; //Allows URL to be displayed after skimmed
+        			if (input.startsWith("http://en.wikipedia.org/wiki/")||input.startsWith("http://en.m.wikipedia.org/wiki/")){ //Allows wikipedia link
         				input=getUrl(input);
         				try {
-        				input = SkimmyMain.parseWiki(input);
+        				input = SkimmyMain.parseWiki(input); //takes out HTML tags and irrelevant text
         				} catch (Exception e){
         					result = e.toString();
         				}
         			} else if (input.endsWith(".txt")) {
         				input = getUrl(input);	
-        			} else {
+        			} else { //Avoids skimming if URL is not compatible
         				result="Sorry, this app currently only accepts wikipedia and .txt links.";
         				toSkim=false;
         			}
         		}
+          		//Output for no network connection, invalid URL, and intended method
           		if (input == "No network connection available."){
           			input = "";
           			URL="";
@@ -142,15 +133,15 @@ public class MainActivity extends ActionBarActivity {
           		}
               }
       		
-              t.setText(URL + result);
-              URL="";
+              t.setText(URL + result); //Prints out link (if applicable) and result
+              URL=""; //Resets URL
               
-              v1.setText(input);
-              v2.setText(keyword);
+              v1.setText(input); //Text from URL placed in editView in order to eliminate need to redownload from Internet source
+              v2.setText(""); //Keyword field reset to allow user to type new keyword faster
             }
         });
         
-        clear.setOnClickListener(new View.OnClickListener() {
+        clear.setOnClickListener(new View.OnClickListener() { //Clear button resets most variables
         	@Override
         	public void onClick(View v) {
         		t.setText("");
@@ -162,6 +153,7 @@ public class MainActivity extends ActionBarActivity {
         });
         
         //Copies text to clipboard and changes background to light gray
+        //From: https://developer.android.com/reference/android/view/View.OnLongClickListener.html#onLongClick%28android.view.View%29
         t.setOnClickListener(new OnClickListener() {
 			@SuppressWarnings("deprecation")
 			@Override
@@ -172,32 +164,6 @@ public class MainActivity extends ActionBarActivity {
                 t.setBackgroundColor(Color.LTGRAY);
             }
         });
-        
-        //Remnants of "Wiki" button which downloaded html from Wikipedia in a separate method before skimming
-//        wiki.setOnClickListener(new View.OnClickListener() {
-//        	@Override
-//        	public void onClick(View v) {
-//                String input = v1.getText().toString();
-//        		if (input.length()>0&&(input.startsWith("http://en.wikipedia.org")||input.startsWith("http://en.m.wikipedia.org"))){
-//        			try{ 
-//        				ConnectivityManager connMgr = (ConnectivityManager) 
-//                                getSystemService(Context.CONNECTIVITY_SERVICE);
-//                        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-//                        if (networkInfo != null && networkInfo.isConnected()) {
-//                        	new DownloadWebpageTask().execute(input);
-//                        } else {
-//                        	t.setText("No network connection available.");
-//                        }
-//                        wikied = true;
-//                        t.setText("Ready to skim");
-//        			} catch (Exception e) {
-//        				t.setText("You only need to press this button for Wikipedia links");
-//        			}
-//        		} else {
-//                	t.setText("You only need to press this button for Wikipedia links");
-//                }
-//        	}
-//        });
         
     }
     
@@ -222,7 +188,7 @@ public class MainActivity extends ActionBarActivity {
     	return input;
     }
     
-    public void getUrl2(String input){
+    public void getUrl2(String input){ //Version of method without .get() to allow parallel processing.
     	//FROM: http://developer.android.com/training/basics/network-ops/connecting.html
         ConnectivityManager connMgr = (ConnectivityManager) 
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -235,12 +201,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     
-    private class DownloadWebpageTask extends AsyncTask<String, Void, String> {
-
+    private class DownloadWebpageTask extends AsyncTask<String, Void, String> { //AsyncTask to allow connection to network
+    	//FROM: http://developer.android.com/training/basics/network-ops/connecting.html
     	ProgressDialog pdLoading = new ProgressDialog(MainActivity.this);
-
         @Override
-        protected void onPreExecute() {
+        protected void onPreExecute() { //Progress dialog
             super.onPreExecute();
             //this method will be running on UI thread
             pdLoading.setMessage("\tLoading...");
@@ -249,7 +214,6 @@ public class MainActivity extends ActionBarActivity {
     	
         @Override
         protected String doInBackground(String... urls) {
-              
             // params comes from the execute() call: params[0] is the url.
             try {
                 return downloadUrl(urls[0]);
@@ -267,7 +231,7 @@ public class MainActivity extends ActionBarActivity {
     
     private String downloadUrl(String myurl) throws IOException {
         InputStream is = null;
-        // Only display the first 500 characters of the retrieved
+        // Only display the first 1000000 characters of the retrieved
         // web page content.
         int len = 1000000;
             
@@ -295,6 +259,16 @@ public class MainActivity extends ActionBarActivity {
         }
     }
     
+    //First iteration of readIt method directly from http://developer.android.com/training/basics/network-ops/connecting.html
+    //Limited by number of characters and cannot detect lines.
+    public String readIt2(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
+        Reader reader = null;
+        reader = new InputStreamReader(stream, "UTF-8");        
+        char[] buffer = new char[len];
+        reader.read(buffer);
+        return new String(buffer);
+    }
+    
     //Modified readIt method. Too slow.
     public String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
 		  String line = new String();
@@ -308,16 +282,7 @@ public class MainActivity extends ActionBarActivity {
 		  }  
         return output;
     }
-    
-    //First iteration of readIt method. Limited by number of characters and cannot detect lines.
-    public String readIt2(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");        
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
-    }
-    
+ 
     //Latest iteration of readIt method. Modified from: http://www.java2s.com/Code/Android/File/ToconverttheInputStreamtoStringweusetheBufferedReaderreadLinemethod.htm
     public String readIt3(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
         BufferedReader reader = null;
@@ -355,8 +320,6 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(String... param) {
         	
-            //this method will be running on background thread so don't update UI frome here
-            //do your long running http tasks here,you dont want to pass argument and u can access the parent class' variable url over here
 //        	String input = param[0];
         	String input = "http://en.wikipedia.org/wiki/Yale_University";
 			try {

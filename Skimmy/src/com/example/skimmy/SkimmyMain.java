@@ -21,39 +21,18 @@ public class SkimmyMain
 	
 	public static void main(String[] args) throws MalformedURLException, IOException, InterruptedException, ExecutionException
 	{
-//		JAVA CONSOLE TESTING
-//		System.out.println("Enter text you would like to skim: ");
-//		Scanner console = new Scanner(System.in);
-//		String input = console.nextLine();
-//		System.out.println("Enter keyword: ");
-//		String keyword = console.next();
-//		String result = null;
-				
-//		TEST FOR DIFFERENT INPUT
-//		String input = "Yale University is a private Ivy League research university in New Haven, Connecticut. Founded in 1701 as the Collegiate School by a group of Congregationalist ministers and chartered by the Colony of Connecticut, the university is the third-oldest institution of higher education in the United States. In 1718, the school was renamed Yale College in recognition of a gift from Elihu Yale, a governor of the British East India Company. Established to train Connecticut ministers in theology and sacred languages, by 1777 the school's curriculum began to incorporate humanities and sciences. During the 19th century Yale gradually incorporated graduate and professional instruction, awarding the first Ph.D. in the United States in 1861 and organizing as a university in 1887.";		
-//		String input = "http://en.wikipedia.org/w/api.php?action=parse&section=0&rvprop=content&format=json&page=Yale_University";
-//		String input = "http://en.wikipedia.org/wiki/Yale_University";
-//		String input = "http://www.gutenberg.org/files/44108/44108-0.txt";
-//		String input = "http://santolucito.github.io/cs112/tiffany.txt";
-//		input = getUrl(input);
-//		System.out.println(input);
-//		System.out.println(parseWiki(input));
-//		
-//		String keyword = "wife";
-//		String result = mainMethod(input, keyword);
-//		System.out.println(result);	
+		
 	}	
 
 //	MAIN METHOD WHICH BUTTON CALLS
 	public static String mainMethod ( String input, String keyword ) 
 	{
 		String skimmy = "";
-//		input = " " + input + ". SKIMMING_COMPLETED";
-		input = " " + input + " . ";
+		input = " " + input + " . "; //Period at end ensures last sentence is parsed
 		String[] sentences =  parseSentenceToArray (input);
 		int size=sentences.length;
 		boolean[] containKeyword = new boolean [size];
-		containKeyword = containKeyword(sentences, keyword, size);
+		containKeyword = containKeyword(sentences, keyword, size); //Checks whether each sentence contains keyword
 		for (int i = 0; i<size ; i++)
 		{
 			if (containKeyword[i] == true)
@@ -61,7 +40,7 @@ public class SkimmyMain
 				skimmy = skimmy.concat((i+1)+"."+sentences[i] + "\n" + "\n");
 			}
 		}
-		if (skimmy == ""){
+		if (skimmy == ""){ //Ouput if keyword not found
 			skimmy = "Keyword not found. \n" +
 					"Note that keyword is case-sensitive.\n\n" +
 					"If you entered a link, ensure that your input does not end with a space.";
@@ -74,14 +53,6 @@ public class SkimmyMain
 	    
 	    String content = input.substring(input.indexOf("<div id=\"content\""), input.length());
 	    content = content.substring(content.indexOf("<p>"),content.length());
-//	    return content;
-
-	    
-//	    Take out TOC
-//	    String preTOC=content.substring(0,content.indexOf("<div id=\"toc\""));
-//	    String postTOC=content.substring(content.substring(content.indexOf("<div id=\"toc\""),
-//	    		content.length()).indexOf("<h2>"),content.length());
-//	    content = preTOC + postTOC;
 	    
 //	    remove tables
 	    content.replaceAll("<table.*?</table>", "");
@@ -95,11 +66,9 @@ public class SkimmyMain
 //	    Chop end at references
 	    content = content.substring(0,content.indexOf("<div class=\"reflist"));
 	    		
+//	    Deletes all < > and [ ]
 	    String parsed = content.replaceAll("\\<.*?>","");
 	    parsed = parsed.replaceAll("\\[.*?]","");
-	    
-//	    remove "Notes and references"
-//	    parsed = parsed.substring(0,parsed.length()-25);
 	       	    
 		return parsed;
 	}
@@ -108,30 +77,28 @@ public class SkimmyMain
 	{   
 		String[] sentences = new String [1]; //Initialised to size 1 and can be expanded later
 		
-		String[] sentenceEnds = {". ", "! ", "? ", ".\" ", "!\" ", "?\" ", ".' ", "!' ","?' "};
+		String[] sentenceEnds = {". ", "! ", "? ", ".\" ", "!\" ", "?\" ", ".' ", "!' ","?' "}; //Array of possible sentence ends
 		int lowestEnd=input.length();
 		int chosenEnd = 0;
-		for (int i = 0; i<sentenceEnds.length; i++){
+		for (int i = 0; i<sentenceEnds.length; i++){ //Identifies first sentence end
 			if (input.indexOf(sentenceEnds[i])<lowestEnd && input.indexOf(sentenceEnds[i])!=-1){
 				lowestEnd=input.indexOf(sentenceEnds[i]);
 				chosenEnd=i;
 			}
 		}
-		String preSentence = input.substring (0, input.indexOf(sentenceEnds[chosenEnd])+1);
-		input = input.substring (input.indexOf(sentenceEnds[chosenEnd])+sentenceEnds[chosenEnd].length(), input.length());
+		String preSentence = input.substring (0, input.indexOf(sentenceEnds[chosenEnd])+1); //Prepares sentence to be checked for words containing periods (ie. Prefixes / acronyms)
+		input = input.substring (input.indexOf(sentenceEnds[chosenEnd])+sentenceEnds[chosenEnd].length(), input.length()); //Prepares for iteration
 				
 		//Next part to accommodate words containing periods
 		boolean continueSentence=false;
 		boolean checkAgain = true;
-		String[] special = {"Ph.D.", "Mr.", "Mrs.", "Dr.", "Ms.", "Inc."};
+		String[] special = {"Ph.D.", "Mr.", "Mrs.", "Dr.", "Ms.", "Inc."}; //Array of special cases. Can be expanded later with more comprehensive list.
 		boolean keepLooking = true;
 		for (int p=0; keepLooking ;p++) {
 			keepLooking = false;
-//		for (int p=0; input.indexOf("SKIMMING_COMPLETED")!=0;p++) {
 			while (checkAgain) {
 				for (int j = 0; j<special.length; j++){
 					if (preSentence.endsWith(special[j])){
-//					if (preSentence.indexOf(special[j]) == (preSentence.length()-special[j].length())){
 						continueSentence = true;
 						if (DEBUG){
 							System.out.print("(a" + j + ")");
@@ -143,7 +110,7 @@ public class SkimmyMain
 						}
 					}
 				}
-				if (continueSentence){
+				if (continueSentence){ //Sentence continues to next sentence end after special case
 					try {
 						lowestEnd=input.length();
 						chosenEnd = 0;
@@ -177,8 +144,8 @@ public class SkimmyMain
 			if (preSentence.charAt(0)!= ' '){ //Makes result look uniform
 				preSentence = " " + preSentence; 
 			}
-			sentences[p]=preSentence;
-			try {
+			sentences[p]=preSentence; //Stores preSentence to array
+			try { //prepares for iteration
 				lowestEnd=input.length();
 				chosenEnd = 0;
 				for (int i = 0; i<sentenceEnds.length; i++){
@@ -196,7 +163,7 @@ public class SkimmyMain
 				System.out.println("P: " + p);
 				System.out.println(sentences[p]);	
 			}
-			for (int i = 0; i<sentenceEnds.length; i++){
+			for (int i = 0; i<sentenceEnds.length; i++){ //checks if input still contains another sentence end
 				if (input.indexOf(sentenceEnds[i])!=-1){
 					keepLooking = true;
 				}
@@ -207,7 +174,7 @@ public class SkimmyMain
 	
 	public static String[] expandArray(String[] originalArray)
 	{
-		String[] newArray = new String[originalArray.length+1];
+		String[] newArray = new String[originalArray.length+1]; //Expands array by adding 1 element (Inspired by assignment 4)
 		for (int i=0; i<originalArray.length;i++)
 		{
 			newArray[i]=originalArray[i];
@@ -229,7 +196,7 @@ public class SkimmyMain
 	return containKeyword;
 	}
 	
-//	getURL method from weather app in lecture
+//	getURL method from weather app in lecture. Not used in final app. Only used for testing in Java.
 	  public static String getUrl(String address) throws MalformedURLException, IOException
 	  {
 		  String output = new String();
